@@ -1,14 +1,7 @@
+import itertools as itr
+
 class RunTest():
   def __init__(self):
-    self.current_lenghts = {
-      "1": 0,
-      "2": 0,
-      "3": 0,
-      "4": 0,
-      "5": 0,
-      "6+": 0
-    }
-
     self.valid_lenghts = {
       "1": [2267, 2733],
       "2": [1079, 1421],
@@ -18,7 +11,7 @@ class RunTest():
       "6+": [90, 223]
     }
 
-  def test(self, key, long_run = False):
+  def the_run_test(self, key, verbose = False):
     """Método para execução do 'The Runs Test'.
     Através de uma determinada chave, é realizado o teste 
     'The Runs Test':
@@ -30,78 +23,86 @@ class RunTest():
 
     Args:
       key (str): Chave para ser testada nos parâmetros do teste.
-      long_run (bool): Se o tipo de Run Test é long run.
+      verbose (bool): Se o retorno do teste será verboso, apresentando
+                      também a quantia de bits que foram distribuídas
+                      entre 1, 2, 3, 4, 5 e 6+.
 
     Returns:
-      None 
+      Caso o argumento verbose é verdadeiro, o retorno é:
+      (bool, dict, dict): Retorno informando em [0] se o teste passou,
+                          [1] o dicionário de contagens de bits 1, e,
+                          [2] o dicionário de contagens de bits 0.
+      Caso contrário:
+      (bool): Teste passou ou não.
     """
-    previous_char = ""
-    curr_char = ""
     seq_len = 0
 
-    for char in key:
-      
-      curr_char = char
-      
-      # Primeiro caractere lido
-      if previous_char == "":
-        previous_char = curr_char
+    count_zero = {"1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6+": 0}
+    count_one = {"1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6+": 0}
 
-      if previous_char == curr_char:
-        seq_len += 1
-
+    for i, j in itr.groupby(key):
+      seq_len = len(list(j))
+      if i == "0":
+        if seq_len >= 6:
+          count_zero["6+"] += 1
+        else:
+          count_zero[str(seq_len)] += 1
       else:
         if seq_len >= 6:
-          self.current_lenghts["6+"] += 1
-          previous_char = curr_char
+          count_one["6+"] += 1
         else:
-          self.current_lenghts[str(seq_len)] += 1
-          previous_char = curr_char
-        seq_len = 1
+          count_one[str(seq_len)] += 1
+    
+    if self.__has_passed(count_one) and self.__has_passed(count_zero):
+      return_value = (True, count_one, count_zero) if verbose else True
+    else:
+      return_value = (False, count_one, count_zero) if verbose else False
+    
+    return return_value
+    
 
-        
-  def get_results(self):
-    """Retorna as contagens, indexadas pelas quantidades.
-    A partir das quantidades de avaliação (a saber, 1, 2, 3, 4, 5 e 6+),
-    retorna as quantidades de bits.
-
-    Args:
-      None
-    Returns:
-      current_lenghts (dict): Dicionário indexado pela quantidade de
-      bits contados. Sendo que em sequências maiores ou iguais a 6 bits
-      é categorizado como 6+ no dicionário.
-    """
-    return self.current_lenghts
-
-  def has_passed(self):
-    """Verifica se a última chave testada passou no teste.
+  def __has_passed(self, current_lenghts):
+    """Método privado que verifica se a chave testada passou no run test.
     A partir dos tamanhos das rodadas (chave do dicionário)
     e a quantia contada (valores do dicionário) é avaliada
     se a quantia está nos intervalos pré-definidos para a 
     avaliação.
 
     Args:
-      None
+      current_lenghts (dict): Dicionário que mapeia os valores de bits um
+              ou zero contados nas chaves 1,2,3,4,5 e 6+.
 
     Returns:
-      (bool): True caso a última chave testada passou no teste.
-              False caso a útlima chave testada não passou no teste.
+      (bool): True caso a chave testada passou no teste.
+              False caso a chave testada não passou no teste.
     """
     valid_count = 0
-    for key,value in self.current_lenghts.items():
+    for key,value in current_lenghts.items():
       if (value >= self.valid_lenghts[key][0] and 
             value <= self.valid_lenghts[key][1]):
         valid_count += 1
     
     return valid_count == 6
-  
-  def clear_key_dict(self):
-    """Limpa o dicionário de teste.
-    
+
+
+  def long_run_test(self, key):
+    """Método que realiza o teste de long run para uma chave dada.
+    A partir de uma chave binária, é realizado o teste 'Long Run test':
+      Uma 'long run' é uma passada de tamanho 34 ou mais, de todos bits
+      zeros ou um. Em uma amostra de 20.000 bits, o teste
+      é passado caso não exista uma 'long run'.
+
+    Args:
+      key (str): Chave binária que passará pelo 'long run test'.
+
+    Returns:
+      (bool): True caso a chave passe pelo teste.
+              False caso da chave não passe pelo teste.
     """
-    # Zera o dicionário atual para nova avaliação
-    for key in self.current_lenghts.keys():
-      self.current_lenghts[key] = 0
+    for _, j in itr.groupby(key):
+      if len(list(j)) >= 34:
+        return False
+    return True
+
 
 
