@@ -14,7 +14,7 @@ Para isso, o repositório atual aborda os testes de aleatoriedade determinados p
 ## *2. The Poker Test*
 + 1. Divida a corrente de 20.000 bits em 5.000 segmentos contínuos de 4 bit (nible). Conte e aramazena o número de ocorrências de cada um das 16 possibilidades de valores de 4 bit. Chame *f(i)* como o número de cada valor *i* 4 bit onde 0 <= *i* <= 15.
 + 2. Valide a fórmula:
-- <img src="https://latex.codecogs.com/gif.latex?X=\frac{16}{5000}\times (\sum_{i=0}^{15}[f(i)]^2) - 5000 " /> 
+- ![equation](https://latex.codecogs.com/svg.image?X=%5Cfrac%7B16%7D%7B5000%7D%5Ctimes%20(%5Csum_%7Bi=0%7D%5E%7B15%7D%5Bf(i)%5D%5E2)%20-%205000") 
 + 3. O teste é passado se 1.03 < X < 57.4.
 
 ## *3. The Runs Test*
