@@ -36,15 +36,16 @@ class RandomTests():
       
       return self.keys
 
-  def monobit_test(self):
+  def monobit_test(self, key, verbose = False):
     """Executa o 'monobit test'.
     """
-    pass
+    return self.run_t.monobit_test(key, verbose)
 
-  def poker_test(self):
+  def poker_test(self, key, verbose = False):
     """Executa o 'poker test'.
     """
-    pass
+    return self.run_t.poker_test(key, verbose)
+    
 
   def run_test(self, key, verbose = False):
     """Executa o 'run test'.
@@ -79,26 +80,49 @@ class RandomTests():
     return self.run_t.long_run_test(key)
 
 if __name__ == "__main__":
+  answer = ""
   verbose = int(input("Obter resultado completo?\n(i.e. opção verbose)\n[0]-Não\n[1]-Sim\n>"))
+  output_file = open("RandomTestsOutputs.txt","w")
   rt = RandomTests()
   keys = rt.read_keys("src/keys.txt","binary")
+
   for idx, key in enumerate(keys):
+    m_test = rt.monobit_test(key, verbose)
+    p_test = rt.poker_test(key, verbose)
     r_test = rt.run_test(key, verbose)
     lr_test = rt.long_run_test(key)
 
+
     if verbose:
-      print(f"""      =====================================
-      Chave {idx+1}                    
+      approved = m_test[0] and p_test[0] and r_test[0] and lr_test 
+      answer += f"""=====================================
+      Chave {idx+1} - Aprovado: {approved}
+      Monobit: {m_test[0]}
+      \t>Count: {m_test[1]}\n  
+      Poker: {p_test[0]}
+      \t>Valor (X): {p_test[2]}
+      \t>Count: {p_test[1]}\n                
       The Run Test: {r_test[0]}
       \t>Bits 1 count:{r_test[1]}
       \t>Bits 0 count:{r_test[2]}\n     
       Long Run Test: {lr_test}
-      """)
+      """
     else:
-      print(f"""      =====================================
-      Chave {idx+1}                    
+      approved = m_test and p_test and r_test and lr_test 
+      answer += f"""=====================================
+      Chave {idx+1} - Aprovado: {approved}
+      Monobit: {m_test}  
+      Poker: {p_test}        
       The Run Test: {r_test}         
       Long Run Test: {lr_test}
-      """)
+      """
+
+  print(answer)
+  print("Escrevendo arquivo...")
+  output_file.write(answer)
+  print("Arquivo finalizado")
+  output_file.close()
+
+
 
 
