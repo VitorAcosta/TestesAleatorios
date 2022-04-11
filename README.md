@@ -7,6 +7,12 @@ Para chaves de criptografia, a geração deve conter:
 
 Para isso, o repositório atual aborda os testes de aleatoriedade determinados pela FIPS 140-1. Existem quatro testes que determinam se os requisitos de segurança de uma cadeia de 20.000 bits foram alcançados.
 
+# Conteúdos 
+1. [Descrição dos testes aleatórios](#Descrição-dos-testes)
+2. [Utilização do código](#Utilização-do-código)
+
+# Descrição dos testes
+
 ## *1. The Monobit Test*
 + 1. Conte o número de uns em uma corrente de 20.000 bits. Chame essa quantidade de X.
 + 2. O teste é passado se 9.654 < X < 10.346.
@@ -35,3 +41,8 @@ Para isso, o repositório atual aborda os testes de aleatoriedade determinados p
 ## *4. The Long Run Test*
 + 1. Uma passada longa (*long run*) é definida como uma passada de tamanho maior ou igual que 34 (de todos zeros ou uns).
 + 2. Em uma amostra de 20.000 bits, o teste é passado se **não** existem passadas longas.
+
+# Utilização do código
+Para utilizar o código, execute o arquivo **RandomTests.py**.
+
+Vale ressaltar que existe a dependência do módulo [itertools](https://docs.python.org/3/library/itertools.html) para que tudo funcione corretamente. Esse módulo é um módulo padrão do python.
